@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: scpc-backend
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.0
+      - key: PORT
+        value: 10000
