@@ -7,4 +7,6 @@ export declare class AbstractsService {
     findAll(): Promise<AbstractDocument[]>;
     findByConference(conferenceId: string): Promise<AbstractDocument[]>;
     update(id: string, updateAbstractDto: any): Promise<AbstractDocument>;
+    bulkUpsert(data: any[]): Promise<any>;
+    findAllExport(): Promise<any[]>;
 }

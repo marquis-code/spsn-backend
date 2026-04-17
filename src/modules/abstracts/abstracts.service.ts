@@ -15,11 +15,11 @@ export class AbstractsService {
   }
 
   async findAll(): Promise<AbstractDocument[]> {
-    return this.abstractModel.find().populate('conference').sort({ createdAt: -1 }).exec();
+    return this.abstractModel.find().populate('conference').sort({ createdAt: -1 }).lean().exec() as any;
   }
 
   async findByConference(conferenceId: string): Promise<AbstractDocument[]> {
-    return this.abstractModel.find({ conference: conferenceId }).exec();
+    return this.abstractModel.find({ conference: conferenceId }).lean().exec() as any;
   }
 
   async update(id: string, updateAbstractDto: any): Promise<AbstractDocument> {
@@ -28,5 +28,20 @@ export class AbstractsService {
       .exec();
     if (!updatedAbstract) throw new NotFoundException('Abstract not found');
     return updatedAbstract;
+  }
+
+  async bulkUpsert(data: any[]): Promise<any> {
+    const ops = data.map(item => ({
+      updateOne: {
+        filter: { title: item.title, author: item.author },
+        update: { $set: item },
+        upsert: true,
+      },
+    }));
+    return this.abstractModel.bulkWrite(ops);
+  }
+
+  async findAllExport(): Promise<any[]> {
+    return this.abstractModel.find().populate('conference', 'title').lean().exec();
   }
 }

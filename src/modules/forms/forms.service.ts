@@ -16,13 +16,13 @@ export class FormsService {
   }
 
   async findAllForms(): Promise<DynamicFormDocument[]> {
-    return this.formModel.find().exec();
+    return this.formModel.find().lean().exec() as any;
   }
 
   async findFormById(id: string): Promise<DynamicFormDocument> {
-    const form = await this.formModel.findById(id).exec();
+    const form = await this.formModel.findById(id).lean().exec();
     if (!form) throw new NotFoundException('Form not found');
-    return form;
+    return form as any;
   }
 
   async submitResponse(submitDto: any): Promise<FormResponse> {
@@ -31,6 +31,16 @@ export class FormsService {
   }
 
   async findResponsesByFormId(formId: string): Promise<FormResponse[]> {
-    return this.responseModel.find({ formId }).sort({ createdAt: -1 }).exec();
+    return this.responseModel.find({ formId }).sort({ createdAt: -1 }).lean().exec() as any;
+  }
+
+  async findAllResponsesExport(formId: string): Promise<any[]> {
+    const responses = await this.responseModel.find({ formId }).lean().exec();
+    // Flatten responses for Excel (using 'data' field from schema)
+    return responses.map((r: any) => ({
+      id: r._id,
+      ...r.data,
+      createdAt: r.createdAt,
+    }));
   }
 }

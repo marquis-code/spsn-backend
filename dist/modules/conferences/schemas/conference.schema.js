@@ -34,7 +34,7 @@ __decorate([
     __metadata("design:type", String)
 ], Conference.prototype, "description", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: true, index: true }),
     __metadata("design:type", Date)
 ], Conference.prototype, "startDate", void 0);
 __decorate([
@@ -54,7 +54,7 @@ __decorate([
     __metadata("design:type", String)
 ], Conference.prototype, "bannerImage", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: 'upcoming', enum: ['upcoming', 'ongoing', 'completed', 'cancelled'] }),
+    (0, mongoose_1.Prop)({ default: 'upcoming', enum: ['upcoming', 'ongoing', 'completed', 'cancelled'], index: true }),
     __metadata("design:type", String)
 ], Conference.prototype, "status", void 0);
 __decorate([

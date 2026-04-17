@@ -40,11 +40,11 @@ __decorate([
     __metadata("design:type", String)
 ], Abstract.prototype, "authorEmail", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'Conference', required: true }),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'Conference', required: true, index: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Abstract.prototype, "conference", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: 'pending', enum: ['pending', 'under_review', 'accepted', 'rejected'] }),
+    (0, mongoose_1.Prop)({ default: 'pending', enum: ['pending', 'under_review', 'accepted', 'rejected'], index: true }),
     __metadata("design:type", String)
 ], Abstract.prototype, "status", void 0);
 __decorate([

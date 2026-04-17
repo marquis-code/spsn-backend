@@ -27,10 +27,10 @@ let AbstractsService = class AbstractsService {
         return createdAbstract.save();
     }
     async findAll() {
-        return this.abstractModel.find().populate('conference').sort({ createdAt: -1 }).exec();
+        return this.abstractModel.find().populate('conference').sort({ createdAt: -1 }).lean().exec();
     }
     async findByConference(conferenceId) {
-        return this.abstractModel.find({ conference: conferenceId }).exec();
+        return this.abstractModel.find({ conference: conferenceId }).lean().exec();
     }
     async update(id, updateAbstractDto) {
         const updatedAbstract = await this.abstractModel
@@ -39,6 +39,19 @@ let AbstractsService = class AbstractsService {
         if (!updatedAbstract)
             throw new common_1.NotFoundException('Abstract not found');
         return updatedAbstract;
+    }
+    async bulkUpsert(data) {
+        const ops = data.map(item => ({
+            updateOne: {
+                filter: { title: item.title, author: item.author },
+                update: { $set: item },
+                upsert: true,
+            },
+        }));
+        return this.abstractModel.bulkWrite(ops);
+    }
+    async findAllExport() {
+        return this.abstractModel.find().populate('conference', 'title').lean().exec();
     }
 };
 exports.AbstractsService = AbstractsService;

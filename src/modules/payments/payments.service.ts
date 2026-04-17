@@ -23,7 +23,7 @@ export class PaymentsService {
     email: string;
     fullName: string;
     phone: string;
-    purpose: string;
+    purpose: string; // e.g., 'MEMBERSHIP_FEE', 'CONFERENCE_REG', 'EXAM_REGISTRATION'
     gateway: 'FLUTTERWAVE' | 'PAYSTACK';
   }) {
     const tx_ref = `SCPSN-${Date.now()}`;
@@ -87,7 +87,7 @@ export class PaymentsService {
   }
 
   async findAll(): Promise<PaymentDocument[]> {
-    return this.paymentModel.find().populate('member').sort({ createdAt: -1 }).exec();
+    return this.paymentModel.find().populate('member').sort({ createdAt: -1 }).lean().exec() as any;
   }
 
   async updateStatus(reference: string, status: string): Promise<PaymentDocument> {
@@ -96,5 +96,20 @@ export class PaymentsService {
       .exec();
     if (!updatedPayment) throw new NotFoundException('Payment record not found');
     return updatedPayment;
+  }
+
+  async bulkUpsert(data: any[]): Promise<any> {
+    const ops = data.map(item => ({
+      updateOne: {
+        filter: { reference: item.reference },
+        update: { $set: item },
+        upsert: true,
+      },
+    }));
+    return this.paymentModel.bulkWrite(ops);
+  }
+
+  async findAllExport(): Promise<any[]> {
+    return this.paymentModel.find().populate('member', 'fullName email').lean().exec();
   }
 }

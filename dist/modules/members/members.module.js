@@ -10,8 +10,10 @@ exports.MembersModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const members_service_1 = require("./members.service");
+const members_import_service_1 = require("./members-import.service");
 const members_controller_1 = require("./members.controller");
 const member_schema_1 = require("./schemas/member.schema");
+const cloudinary_module_1 = require("../cloudinary/cloudinary.module");
 let MembersModule = class MembersModule {
 };
 exports.MembersModule = MembersModule;
@@ -19,10 +21,11 @@ exports.MembersModule = MembersModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: member_schema_1.Member.name, schema: member_schema_1.MemberSchema }]),
+            cloudinary_module_1.CloudinaryModule,
         ],
         controllers: [members_controller_1.MembersController],
-        providers: [members_service_1.MembersService],
-        exports: [members_service_1.MembersService],
+        providers: [members_service_1.MembersService, members_import_service_1.MembersImportService],
+        exports: [members_service_1.MembersService, mongoose_1.MongooseModule],
     })
 ], MembersModule);
 //# sourceMappingURL=members.module.js.map

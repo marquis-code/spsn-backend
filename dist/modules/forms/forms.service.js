@@ -29,10 +29,10 @@ let FormsService = class FormsService {
         return createdForm.save();
     }
     async findAllForms() {
-        return this.formModel.find().exec();
+        return this.formModel.find().lean().exec();
     }
     async findFormById(id) {
-        const form = await this.formModel.findById(id).exec();
+        const form = await this.formModel.findById(id).lean().exec();
         if (!form)
             throw new common_1.NotFoundException('Form not found');
         return form;
@@ -42,7 +42,15 @@ let FormsService = class FormsService {
         return createdResponse.save();
     }
     async findResponsesByFormId(formId) {
-        return this.responseModel.find({ formId }).sort({ createdAt: -1 }).exec();
+        return this.responseModel.find({ formId }).sort({ createdAt: -1 }).lean().exec();
+    }
+    async findAllResponsesExport(formId) {
+        const responses = await this.responseModel.find({ formId }).lean().exec();
+        return responses.map((r) => ({
+            id: r._id,
+            ...r.data,
+            createdAt: r.createdAt,
+        }));
     }
 };
 exports.FormsService = FormsService;

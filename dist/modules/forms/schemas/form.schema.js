@@ -32,7 +32,7 @@ __decorate([
     __metadata("design:type", Array)
 ], DynamicForm.prototype, "fields", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: true }),
+    (0, mongoose_1.Prop)({ default: true, index: true }),
     __metadata("design:type", Boolean)
 ], DynamicForm.prototype, "isActive", void 0);
 __decorate([
@@ -50,7 +50,7 @@ let FormResponse = class FormResponse {
 };
 exports.FormResponse = FormResponse;
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, type: String }),
+    (0, mongoose_1.Prop)({ required: true, type: String, index: true }),
     __metadata("design:type", String)
 ], FormResponse.prototype, "formId", void 0);
 __decorate([

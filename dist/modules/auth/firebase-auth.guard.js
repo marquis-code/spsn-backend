@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FirebaseAuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
-let FirebaseAuthGuard = class FirebaseAuthGuard extends (0, passport_1.AuthGuard)('firebase-auth') {
+let FirebaseAuthGuard = class FirebaseAuthGuard extends (0, passport_1.AuthGuard)(['firebase-auth', 'jwt']) {
     canActivate(context) {
         return super.canActivate(context);
     }

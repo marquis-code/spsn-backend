@@ -34,12 +34,12 @@ let ConferencesService = class ConferencesService {
         const cachedData = await this.cacheManager.get('all_conferences');
         if (cachedData)
             return cachedData;
-        const conferences = await this.conferenceModel.find().sort({ startDate: 1 }).exec();
+        const conferences = await this.conferenceModel.find().sort({ startDate: 1 }).lean().exec();
         await this.cacheManager.set('all_conferences', conferences, 3600);
         return conferences;
     }
     async findOne(id) {
-        const conference = await this.conferenceModel.findById(id).exec();
+        const conference = await this.conferenceModel.findById(id).lean().exec();
         if (!conference)
             throw new common_1.NotFoundException('Conference not found');
         return conference;
@@ -50,13 +50,29 @@ let ConferencesService = class ConferencesService {
             .exec();
         if (!updatedConference)
             throw new common_1.NotFoundException('Conference not found');
+        await this.cacheManager.del('all_conferences');
         return updatedConference;
     }
     async delete(id) {
         const result = await this.conferenceModel.findByIdAndDelete(id).exec();
         if (!result)
             throw new common_1.NotFoundException('Conference not found');
+        await this.cacheManager.del('all_conferences');
         return result;
+    }
+    async bulkUpsert(data) {
+        const ops = data.map(item => ({
+            updateOne: {
+                filter: { title: item.title },
+                update: { $set: item },
+                upsert: true,
+            },
+        }));
+        await this.cacheManager.del('all_conferences');
+        return this.conferenceModel.bulkWrite(ops);
+    }
+    async findAllExport() {
+        return this.conferenceModel.find().lean().exec();
     }
 };
 exports.ConferencesService = ConferencesService;

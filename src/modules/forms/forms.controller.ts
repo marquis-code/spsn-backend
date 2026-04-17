@@ -4,14 +4,33 @@ import {
   Post,
   Body,
   Param,
+  Res,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { ExcelService } from '../excel/excel.service';
+import type { Response } from 'express';
 import { FormsService } from './forms.service';
 import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
 
 @Controller('forms')
 export class FormsController {
-  constructor(private readonly formsService: FormsService) {}
+  constructor(
+    private readonly formsService: FormsService,
+    private readonly excelService: ExcelService,
+  ) {}
+
+  @Get(':id/export')
+  @UseGuards(FirebaseAuthGuard)
+  async export(@Param('id') formId: string, @Res() res: Response) {
+    const data = await this.formsService.findAllResponsesExport(formId);
+    const buffer = await this.excelService.generateExcel(data, `Responses_${formId}`);
+    res.set({
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': `attachment; filename="form_responses_${formId}.xlsx"`,
+    });
+    res.send(buffer);
+  }
 
   @Post()
   @UseGuards(FirebaseAuthGuard)

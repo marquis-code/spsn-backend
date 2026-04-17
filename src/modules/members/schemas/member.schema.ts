@@ -8,7 +8,7 @@ export class Member {
   @Prop({ required: true })
   fullName: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true, unique: true, index: true })
   email: string;
 
   @Prop()
@@ -17,8 +17,55 @@ export class Member {
   @Prop()
   membershipId: string;
 
-  @Prop({ default: 'regular', enum: ['regular', 'student', 'fellow', 'admin'] })
+  @Prop({ default: 'regular', enum: ['regular', 'student', 'fellow', 'admin'], index: true })
   role: string;
+
+  @Prop({ default: 'Pending', enum: ['Pending', 'Active', 'Suspended', 'Expired'], index: true })
+  status: string;
+
+  @Prop({ enum: ['Student', 'Associate', 'Full', 'Fellow'] })
+  category: string;
+
+  @Prop({
+    type: {
+      passport: String,
+      qualification: String,
+      license: String,
+      cv: String,
+      id: String,
+      proofOfPayment: String,
+      referee: String,
+    },
+    default: {}
+  })
+  documents: {
+    passport: string;
+    qualification: string;
+    license: string;
+    cv: string;
+    id: string;
+    proofOfPayment: string;
+    referee: string;
+  };
+
+  @Prop({
+    type: {
+      bio: String,
+      portfolio: String,
+      education: [String],
+      experience: [String],
+    },
+    default: {}
+  })
+  professionalProfile: {
+    bio: string;
+    portfolio: string;
+    education: string[];
+    experience: string[];
+  };
+
+  @Prop()
+  expiryDate: Date;
 
   @Prop({ default: true })
   isActive: boolean;
@@ -31,6 +78,9 @@ export class Member {
 
   @Prop()
   profileImage: string;
+
+  @Prop({ select: false })
+  password?: string;
 }
 
 export const MemberSchema = SchemaFactory.createForClass(Member);

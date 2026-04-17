@@ -14,12 +14,52 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EnquiriesController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
 const enquiries_service_1 = require("./enquiries.service");
+const excel_service_1 = require("../excel/excel.service");
+const passport_1 = require("@nestjs/passport");
 const firebase_auth_guard_1 = require("../auth/firebase-auth.guard");
 let EnquiriesController = class EnquiriesController {
     enquiriesService;
-    constructor(enquiriesService) {
+    excelService;
+    constructor(enquiriesService, excelService) {
         this.enquiriesService = enquiriesService;
+        this.excelService = excelService;
+    }
+    async getTemplate(res) {
+        const data = [{
+                'Name': '',
+                'Email': '',
+                'Subject': '',
+                'Message': '',
+                'Status': 'New',
+            }];
+        const buffer = await this.excelService.generateExcel(data, 'Enquiries Template');
+        res.set({
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': 'attachment; filename="enquiries_template.xlsx"',
+        });
+        res.send(buffer);
+    }
+    async import(file) {
+        const headerMap = {
+            'name': 'name',
+            'email': 'email',
+            'subject': 'subject',
+            'message': 'message',
+            'status': 'status',
+        };
+        const data = await this.excelService.readExcel(file.buffer, headerMap);
+        return this.enquiriesService.bulkUpsert(data);
+    }
+    async export(res) {
+        const data = await this.enquiriesService.findAllExport();
+        const buffer = await this.excelService.generateExcel(data, 'Enquiries');
+        res.set({
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': 'attachment; filename="enquiries.xlsx"',
+        });
+        res.send(buffer);
     }
     create(createEnquiryDto) {
         return this.enquiriesService.create(createEnquiryDto);
@@ -39,6 +79,31 @@ let EnquiriesController = class EnquiriesController {
 };
 exports.EnquiriesController = EnquiriesController;
 __decorate([
+    (0, common_1.Get)('template'),
+    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], EnquiriesController.prototype, "getTemplate", null);
+__decorate([
+    (0, common_1.Post)('import'),
+    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], EnquiriesController.prototype, "import", null);
+__decorate([
+    (0, common_1.Get)('export'),
+    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], EnquiriesController.prototype, "export", null);
+__decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -47,7 +112,7 @@ __decorate([
 ], EnquiriesController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)(['jwt', 'firebase-auth'])),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
@@ -79,6 +144,7 @@ __decorate([
 ], EnquiriesController.prototype, "remove", null);
 exports.EnquiriesController = EnquiriesController = __decorate([
     (0, common_1.Controller)('enquiries'),
-    __metadata("design:paramtypes", [enquiries_service_1.EnquiriesService])
+    __metadata("design:paramtypes", [enquiries_service_1.EnquiriesService,
+        excel_service_1.ExcelService])
 ], EnquiriesController);
 //# sourceMappingURL=enquiries.controller.js.map

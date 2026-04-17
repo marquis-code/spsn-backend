@@ -18,6 +18,7 @@ let Blog = class Blog {
     excerpt;
     coverImage;
     status;
+    type;
     tags;
     author;
 };
@@ -43,9 +44,13 @@ __decorate([
     __metadata("design:type", String)
 ], Blog.prototype, "coverImage", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: 'draft', enum: ['draft', 'published', 'archived'] }),
+    (0, mongoose_1.Prop)({ default: 'published', enum: ['draft', 'published', 'archived'], index: true }),
     __metadata("design:type", String)
 ], Blog.prototype, "status", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 'news', enum: ['news', 'newsletter', 'journal'], index: true }),
+    __metadata("design:type", String)
+], Blog.prototype, "type", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: [String], default: [] }),
     __metadata("design:type", Array)

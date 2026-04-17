@@ -8,4 +8,6 @@ export declare class AppointmentsService {
     findOne(id: string): Promise<AppointmentDocument>;
     update(id: string, updateAppointmentDto: any): Promise<AppointmentDocument>;
     delete(id: string): Promise<any>;
+    bulkUpsert(data: any[]): Promise<any>;
+    findAllExport(): Promise<any[]>;
 }

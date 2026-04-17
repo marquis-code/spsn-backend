@@ -9,4 +9,5 @@ export declare class FormsService {
     findFormById(id: string): Promise<DynamicFormDocument>;
     submitResponse(submitDto: any): Promise<FormResponse>;
     findResponsesByFormId(formId: string): Promise<FormResponse[]>;
+    findAllResponsesExport(formId: string): Promise<any[]>;
 }

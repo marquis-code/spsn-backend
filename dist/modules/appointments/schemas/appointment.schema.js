@@ -37,7 +37,7 @@ __decorate([
     __metadata("design:type", String)
 ], Appointment.prototype, "phoneNumber", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: true, index: true }),
     __metadata("design:type", Date)
 ], Appointment.prototype, "date", void 0);
 __decorate([
@@ -49,7 +49,7 @@ __decorate([
     __metadata("design:type", String)
 ], Appointment.prototype, "purpose", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: 'pending', enum: ['pending', 'confirmed', 'cancelled', 'completed'] }),
+    (0, mongoose_1.Prop)({ default: 'pending', enum: ['pending', 'confirmed', 'cancelled', 'completed'], index: true }),
     __metadata("design:type", String)
 ], Appointment.prototype, "status", void 0);
 __decorate([

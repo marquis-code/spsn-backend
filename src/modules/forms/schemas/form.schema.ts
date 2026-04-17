@@ -21,7 +21,7 @@ export class DynamicForm {
     placeholder?: string;
   }[];
 
-  @Prop({ default: true })
+  @Prop({ default: true, index: true })
   isActive: boolean;
 
   @Prop()
@@ -32,7 +32,7 @@ export const DynamicFormSchema = SchemaFactory.createForClass(DynamicForm);
 
 @Schema({ timestamps: true })
 export class FormResponse {
-  @Prop({ required: true, type: String })
+  @Prop({ required: true, type: String, index: true })
   formId: string;
 
   @Prop({ type: Object, required: true })

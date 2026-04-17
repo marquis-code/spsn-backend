@@ -19,6 +19,8 @@ import { AbstractsModule } from './modules/abstracts/abstracts.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { MailModule } from './modules/mail/mail.module';
+import { CmsModule } from './modules/cms/cms.module';
+import { ExcelModule } from './modules/excel/excel.module';
 
 @Module({
   imports: [
@@ -65,6 +67,8 @@ import { MailModule } from './modules/mail/mail.module';
     AuthModule,
     CloudinaryModule,
     MailModule,
+    CmsModule,
+    ExcelModule,
   ],
   controllers: [AppController],
   providers: [

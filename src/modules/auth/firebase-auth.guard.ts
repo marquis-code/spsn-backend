@@ -2,7 +2,7 @@ import { Injectable, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class FirebaseAuthGuard extends AuthGuard('firebase-auth') {
+export class FirebaseAuthGuard extends AuthGuard(['firebase-auth', 'jwt']) {
   canActivate(context: ExecutionContext) {
     return super.canActivate(context);
   }

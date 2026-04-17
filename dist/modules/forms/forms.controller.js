@@ -14,12 +14,24 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FormsController = void 0;
 const common_1 = require("@nestjs/common");
+const excel_service_1 = require("../excel/excel.service");
 const forms_service_1 = require("./forms.service");
 const firebase_auth_guard_1 = require("../auth/firebase-auth.guard");
 let FormsController = class FormsController {
     formsService;
-    constructor(formsService) {
+    excelService;
+    constructor(formsService, excelService) {
         this.formsService = formsService;
+        this.excelService = excelService;
+    }
+    async export(formId, res) {
+        const data = await this.formsService.findAllResponsesExport(formId);
+        const buffer = await this.excelService.generateExcel(data, `Responses_${formId}`);
+        res.set({
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': `attachment; filename="form_responses_${formId}.xlsx"`,
+        });
+        res.send(buffer);
     }
     create(createFormDto) {
         return this.formsService.createForm(createFormDto);
@@ -38,6 +50,15 @@ let FormsController = class FormsController {
     }
 };
 exports.FormsController = FormsController;
+__decorate([
+    (0, common_1.Get)(':id/export'),
+    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], FormsController.prototype, "export", null);
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
@@ -77,6 +98,7 @@ __decorate([
 ], FormsController.prototype, "getResponses", null);
 exports.FormsController = FormsController = __decorate([
     (0, common_1.Controller)('forms'),
-    __metadata("design:paramtypes", [forms_service_1.FormsService])
+    __metadata("design:paramtypes", [forms_service_1.FormsService,
+        excel_service_1.ExcelService])
 ], FormsController);
 //# sourceMappingURL=forms.controller.js.map

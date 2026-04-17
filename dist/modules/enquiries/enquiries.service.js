@@ -27,10 +27,10 @@ let EnquiriesService = class EnquiriesService {
         return createdEnquiry.save();
     }
     async findAll() {
-        return this.enquiryModel.find().sort({ createdAt: -1 }).exec();
+        return this.enquiryModel.find().sort({ createdAt: -1 }).lean().exec();
     }
     async findOne(id) {
-        const enquiry = await this.enquiryModel.findById(id).exec();
+        const enquiry = await this.enquiryModel.findById(id).lean().exec();
         if (!enquiry)
             throw new common_1.NotFoundException('Enquiry not found');
         return enquiry;
@@ -48,6 +48,19 @@ let EnquiriesService = class EnquiriesService {
         if (!result)
             throw new common_1.NotFoundException('Enquiry not found');
         return result;
+    }
+    async bulkUpsert(data) {
+        const ops = data.map(item => ({
+            updateOne: {
+                filter: { email: item.email, subject: item.subject },
+                update: { $set: item },
+                upsert: true,
+            },
+        }));
+        return this.enquiryModel.bulkWrite(ops);
+    }
+    async findAllExport() {
+        return this.enquiryModel.find().lean().exec();
     }
 };
 exports.EnquiriesService = EnquiriesService;

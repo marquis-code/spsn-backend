@@ -9,11 +9,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CloudinaryModule = void 0;
 const common_1 = require("@nestjs/common");
 const cloudinary_service_1 = require("./cloudinary.service");
+const media_controller_1 = require("./media.controller");
 let CloudinaryModule = class CloudinaryModule {
 };
 exports.CloudinaryModule = CloudinaryModule;
 exports.CloudinaryModule = CloudinaryModule = __decorate([
     (0, common_1.Module)({
+        controllers: [media_controller_1.MediaController],
         providers: [cloudinary_service_1.CloudinaryService],
         exports: [cloudinary_service_1.CloudinaryService],
     })

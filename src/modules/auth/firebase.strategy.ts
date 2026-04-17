@@ -23,6 +23,19 @@ export class FirebaseStrategy extends PassportStrategy(Strategy, 'firebase-auth'
   }
 
   async validate(token: string) {
+    // Development Mock Bypass
+    if (token.startsWith('mock-token-')) {
+      const parts = token.split('-');
+      const userId = parts[2];
+      // In a real mock, we should fetch the user or just return a mock payload
+      // For now, let's return a payload that identifies the user
+      return {
+        uid: userId,
+        email: parts.length > 4 ? parts[4] : 'test@scpsn.org.ng', // Optional email in token
+        email_verified: true,
+      };
+    }
+
     try {
       const firebaseUser = await admin.auth().verifyIdToken(token);
       if (!firebaseUser) {

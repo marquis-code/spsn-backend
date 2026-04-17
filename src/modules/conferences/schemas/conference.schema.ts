@@ -11,7 +11,7 @@ export class Conference {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, index: true })
   startDate: Date;
 
   @Prop({ required: true })
@@ -26,7 +26,7 @@ export class Conference {
   @Prop()
   bannerImage: string;
 
-  @Prop({ default: 'upcoming', enum: ['upcoming', 'ongoing', 'completed', 'cancelled'] })
+  @Prop({ default: 'upcoming', enum: ['upcoming', 'ongoing', 'completed', 'cancelled'], index: true })
   status: string;
 
   @Prop({ type: [Object], default: [] })

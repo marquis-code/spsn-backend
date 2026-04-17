@@ -14,12 +14,54 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppointmentsController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
 const appointments_service_1 = require("./appointments.service");
+const excel_service_1 = require("../excel/excel.service");
+const passport_1 = require("@nestjs/passport");
 const firebase_auth_guard_1 = require("../auth/firebase-auth.guard");
 let AppointmentsController = class AppointmentsController {
     appointmentsService;
-    constructor(appointmentsService) {
+    excelService;
+    constructor(appointmentsService, excelService) {
         this.appointmentsService = appointmentsService;
+        this.excelService = excelService;
+    }
+    async getTemplate(res) {
+        const data = [{
+                'Member': '',
+                'Date': '',
+                'Time': '',
+                'Purpose': '',
+                'Status': 'Pending',
+                'Notes': '',
+            }];
+        const buffer = await this.excelService.generateExcel(data, 'Appointments Template');
+        res.set({
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': 'attachment; filename="appointments_template.xlsx"',
+        });
+        res.send(buffer);
+    }
+    async import(file) {
+        const headerMap = {
+            'member': 'member',
+            'date': 'date',
+            'time': 'time',
+            'purpose': 'purpose',
+            'status': 'status',
+            'notes': 'notes',
+        };
+        const data = await this.excelService.readExcel(file.buffer, headerMap);
+        return this.appointmentsService.bulkUpsert(data);
+    }
+    async export(res) {
+        const data = await this.appointmentsService.findAllExport();
+        const buffer = await this.excelService.generateExcel(data, 'Appointments');
+        res.set({
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': 'attachment; filename="appointments.xlsx"',
+        });
+        res.send(buffer);
     }
     create(createAppointmentDto) {
         return this.appointmentsService.create(createAppointmentDto);
@@ -39,6 +81,31 @@ let AppointmentsController = class AppointmentsController {
 };
 exports.AppointmentsController = AppointmentsController;
 __decorate([
+    (0, common_1.Get)('template'),
+    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AppointmentsController.prototype, "getTemplate", null);
+__decorate([
+    (0, common_1.Post)('import'),
+    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AppointmentsController.prototype, "import", null);
+__decorate([
+    (0, common_1.Get)('export'),
+    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AppointmentsController.prototype, "export", null);
+__decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -47,7 +114,7 @@ __decorate([
 ], AppointmentsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)(['jwt', 'firebase-auth'])),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
@@ -79,6 +146,7 @@ __decorate([
 ], AppointmentsController.prototype, "remove", null);
 exports.AppointmentsController = AppointmentsController = __decorate([
     (0, common_1.Controller)('appointments'),
-    __metadata("design:paramtypes", [appointments_service_1.AppointmentsService])
+    __metadata("design:paramtypes", [appointments_service_1.AppointmentsService,
+        excel_service_1.ExcelService])
 ], AppointmentsController);
 //# sourceMappingURL=appointments.controller.js.map

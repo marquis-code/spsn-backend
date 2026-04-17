@@ -15,13 +15,13 @@ export class EnquiriesService {
   }
 
   async findAll(): Promise<EnquiryDocument[]> {
-    return this.enquiryModel.find().sort({ createdAt: -1 }).exec();
+    return this.enquiryModel.find().sort({ createdAt: -1 }).lean().exec() as any;
   }
 
   async findOne(id: string): Promise<EnquiryDocument> {
-    const enquiry = await this.enquiryModel.findById(id).exec();
+    const enquiry = await this.enquiryModel.findById(id).lean().exec();
     if (!enquiry) throw new NotFoundException('Enquiry not found');
-    return enquiry;
+    return enquiry as any;
   }
 
   async update(id: string, updateEnquiryDto: any): Promise<EnquiryDocument> {
@@ -36,5 +36,20 @@ export class EnquiriesService {
     const result = await this.enquiryModel.findByIdAndDelete(id).exec();
     if (!result) throw new NotFoundException('Enquiry not found');
     return result;
+  }
+
+  async bulkUpsert(data: any[]): Promise<any> {
+    const ops = data.map(item => ({
+      updateOne: {
+        filter: { email: item.email, subject: item.subject },
+        update: { $set: item },
+        upsert: true,
+      },
+    }));
+    return this.enquiryModel.bulkWrite(ops);
+  }
+
+  async findAllExport(): Promise<any[]> {
+    return this.enquiryModel.find().lean().exec();
   }
 }

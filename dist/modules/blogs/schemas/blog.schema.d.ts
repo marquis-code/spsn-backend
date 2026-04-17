@@ -7,6 +7,7 @@ export declare class Blog {
     excerpt: string;
     coverImage: string;
     status: string;
+    type: string;
     tags: string[];
     author: string;
 }
@@ -75,6 +76,15 @@ export declare const BlogSchema: import("mongoose").Schema<Blog, import("mongoos
         id: string;
     }> | undefined;
     status?: import("mongoose").SchemaDefinitionProperty<string, Blog, Document<unknown, {}, Blog, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Blog & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }> | undefined;
+    type?: import("mongoose").SchemaDefinitionProperty<string, Blog, Document<unknown, {}, Blog, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Blog & {
         _id: import("mongoose").Types.ObjectId;

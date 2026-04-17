@@ -28,16 +28,16 @@ let BlogsService = class BlogsService {
     }
     async findAll(status) {
         const query = status ? { status } : {};
-        return this.blogModel.find(query).sort({ createdAt: -1 }).exec();
+        return this.blogModel.find(query).sort({ createdAt: -1 }).lean().exec();
     }
     async findOne(id) {
-        const blog = await this.blogModel.findById(id).exec();
+        const blog = await this.blogModel.findById(id).lean().exec();
         if (!blog)
             throw new common_1.NotFoundException('Blog post not found');
         return blog;
     }
     async findBySlug(slug) {
-        const blog = await this.blogModel.findOne({ slug }).exec();
+        const blog = await this.blogModel.findOne({ slug }).lean().exec();
         if (!blog)
             throw new common_1.NotFoundException('Blog post not found');
         return blog;
@@ -55,6 +55,19 @@ let BlogsService = class BlogsService {
         if (!result)
             throw new common_1.NotFoundException('Blog post not found');
         return result;
+    }
+    async bulkUpsert(data) {
+        const ops = data.map(item => ({
+            updateOne: {
+                filter: { slug: item.slug || item.title?.toLowerCase().replace(/ /g, '-') },
+                update: { $set: item },
+                upsert: true,
+            },
+        }));
+        return this.blogModel.bulkWrite(ops);
+    }
+    async findAllExport() {
+        return this.blogModel.find().lean().exec();
     }
 };
 exports.BlogsService = BlogsService;

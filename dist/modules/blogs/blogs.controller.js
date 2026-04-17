@@ -14,12 +14,53 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlogsController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
 const blogs_service_1 = require("./blogs.service");
 const firebase_auth_guard_1 = require("../auth/firebase-auth.guard");
+const excel_service_1 = require("../excel/excel.service");
 let BlogsController = class BlogsController {
     blogsService;
-    constructor(blogsService) {
+    excelService;
+    constructor(blogsService, excelService) {
         this.blogsService = blogsService;
+        this.excelService = excelService;
+    }
+    async getTemplate(res) {
+        const data = [{
+                'Title': '',
+                'Content': '',
+                'Author': '',
+                'Category': '',
+                'Status': 'Draft',
+                'Image': '',
+            }];
+        const buffer = await this.excelService.generateExcel(data, 'Blogs Template');
+        res.set({
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': 'attachment; filename="blogs_template.xlsx"',
+        });
+        res.send(buffer);
+    }
+    async import(file) {
+        const headerMap = {
+            'title': 'title',
+            'content': 'content',
+            'author': 'author',
+            'category': 'category',
+            'status': 'status',
+            'image': 'image',
+        };
+        const data = await this.excelService.readExcel(file.buffer, headerMap);
+        return this.blogsService.bulkUpsert(data);
+    }
+    async export(res) {
+        const data = await this.blogsService.findAllExport();
+        const buffer = await this.excelService.generateExcel(data, 'Blogs');
+        res.set({
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': 'attachment; filename="blogs.xlsx"',
+        });
+        res.send(buffer);
     }
     create(createBlogDto) {
         return this.blogsService.create(createBlogDto);
@@ -41,6 +82,31 @@ let BlogsController = class BlogsController {
     }
 };
 exports.BlogsController = BlogsController;
+__decorate([
+    (0, common_1.Get)('template'),
+    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], BlogsController.prototype, "getTemplate", null);
+__decorate([
+    (0, common_1.Post)('import'),
+    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], BlogsController.prototype, "import", null);
+__decorate([
+    (0, common_1.Get)('export'),
+    (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], BlogsController.prototype, "export", null);
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.UseGuards)(firebase_auth_guard_1.FirebaseAuthGuard),
@@ -89,6 +155,7 @@ __decorate([
 ], BlogsController.prototype, "remove", null);
 exports.BlogsController = BlogsController = __decorate([
     (0, common_1.Controller)('blogs'),
-    __metadata("design:paramtypes", [blogs_service_1.BlogsService])
+    __metadata("design:paramtypes", [blogs_service_1.BlogsService,
+        excel_service_1.ExcelService])
 ], BlogsController);
 //# sourceMappingURL=blogs.controller.js.map

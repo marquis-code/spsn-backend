@@ -20,8 +20,11 @@ export class Blog {
   @Prop()
   coverImage: string;
 
-  @Prop({ default: 'draft', enum: ['draft', 'published', 'archived'] })
+  @Prop({ default: 'published', enum: ['draft', 'published', 'archived'], index: true })
   status: string;
+
+  @Prop({ default: 'news', enum: ['news', 'newsletter', 'journal'], index: true })
+  type: string;
 
   @Prop({ type: [String], default: [] })
   tags: string[];

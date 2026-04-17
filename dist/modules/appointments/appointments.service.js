@@ -27,10 +27,10 @@ let AppointmentsService = class AppointmentsService {
         return createdAppointment.save();
     }
     async findAll() {
-        return this.appointmentModel.find().populate('member').sort({ date: 1, time: 1 }).exec();
+        return this.appointmentModel.find().populate('member').sort({ date: 1, time: 1 }).lean().exec();
     }
     async findOne(id) {
-        const appointment = await this.appointmentModel.findById(id).populate('member').exec();
+        const appointment = await this.appointmentModel.findById(id).populate('member').lean().exec();
         if (!appointment)
             throw new common_1.NotFoundException('Appointment not found');
         return appointment;
@@ -48,6 +48,19 @@ let AppointmentsService = class AppointmentsService {
         if (!result)
             throw new common_1.NotFoundException('Appointment not found');
         return result;
+    }
+    async bulkUpsert(data) {
+        const ops = data.map(item => ({
+            updateOne: {
+                filter: { member: item.member, date: item.date, time: item.time },
+                update: { $set: item },
+                upsert: true,
+            },
+        }));
+        return this.appointmentModel.bulkWrite(ops);
+    }
+    async findAllExport() {
+        return this.appointmentModel.find().populate('member', 'fullName email').lean().exec();
     }
 };
 exports.AppointmentsService = AppointmentsService;

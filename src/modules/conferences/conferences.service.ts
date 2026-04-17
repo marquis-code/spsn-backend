@@ -22,15 +22,15 @@ export class ConferencesService {
     const cachedData = await this.cacheManager.get<ConferenceDocument[]>('all_conferences');
     if (cachedData) return cachedData;
 
-    const conferences = await this.conferenceModel.find().sort({ startDate: 1 }).exec();
-    await this.cacheManager.set('all_conferences', conferences, 3600); // 1 hour cache
-    return conferences;
+    const conferences = await this.conferenceModel.find().sort({ startDate: 1 }).lean().exec();
+    await this.cacheManager.set('all_conferences', conferences, 3600);
+    return conferences as any;
   }
 
   async findOne(id: string): Promise<ConferenceDocument> {
-    const conference = await this.conferenceModel.findById(id).exec();
+    const conference = await this.conferenceModel.findById(id).lean().exec();
     if (!conference) throw new NotFoundException('Conference not found');
-    return conference;
+    return conference as any;
   }
 
   async update(id: string, updateConferenceDto: any): Promise<ConferenceDocument> {
@@ -38,12 +38,30 @@ export class ConferencesService {
       .findByIdAndUpdate(id, updateConferenceDto, { new: true })
       .exec();
     if (!updatedConference) throw new NotFoundException('Conference not found');
+    await this.cacheManager.del('all_conferences');
     return updatedConference;
   }
 
   async delete(id: string): Promise<any> {
     const result = await this.conferenceModel.findByIdAndDelete(id).exec();
     if (!result) throw new NotFoundException('Conference not found');
+    await this.cacheManager.del('all_conferences');
     return result;
+  }
+
+  async bulkUpsert(data: any[]): Promise<any> {
+    const ops = data.map(item => ({
+      updateOne: {
+        filter: { title: item.title },
+        update: { $set: item },
+        upsert: true,
+      },
+    }));
+    await this.cacheManager.del('all_conferences');
+    return this.conferenceModel.bulkWrite(ops);
+  }
+
+  async findAllExport(): Promise<any[]> {
+    return this.conferenceModel.find().lean().exec();
   }
 }

@@ -9,4 +9,6 @@ export declare class BlogsService {
     findBySlug(slug: string): Promise<BlogDocument>;
     update(id: string, updateBlogDto: any): Promise<BlogDocument>;
     delete(id: string): Promise<any>;
+    bulkUpsert(data: any[]): Promise<any>;
+    findAllExport(): Promise<any[]>;
 }

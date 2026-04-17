@@ -6,6 +6,10 @@ declare const FirebaseStrategy_base: new (...args: [options: any, verify: any] |
 export declare class FirebaseStrategy extends FirebaseStrategy_base {
     private configService;
     constructor(configService: ConfigService);
-    validate(token: string): Promise<import("node_modules/firebase-admin/lib/auth/token-verifier").DecodedIdToken>;
+    validate(token: string): Promise<import("node_modules/firebase-admin/lib/auth/token-verifier").DecodedIdToken | {
+        uid: string;
+        email: string;
+        email_verified: boolean;
+    }>;
 }
 export {};

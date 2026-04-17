@@ -17,10 +17,16 @@ let Member = class Member {
     phoneNumber;
     membershipId;
     role;
+    status;
+    category;
+    documents;
+    professionalProfile;
+    expiryDate;
     isActive;
     organization;
     firebaseUid;
     profileImage;
+    password;
 };
 exports.Member = Member;
 __decorate([
@@ -28,7 +34,7 @@ __decorate([
     __metadata("design:type", String)
 ], Member.prototype, "fullName", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, unique: true }),
+    (0, mongoose_1.Prop)({ required: true, unique: true, index: true }),
     __metadata("design:type", String)
 ], Member.prototype, "email", void 0);
 __decorate([
@@ -40,9 +46,48 @@ __decorate([
     __metadata("design:type", String)
 ], Member.prototype, "membershipId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: 'regular', enum: ['regular', 'student', 'fellow', 'admin'] }),
+    (0, mongoose_1.Prop)({ default: 'regular', enum: ['regular', 'student', 'fellow', 'admin'], index: true }),
     __metadata("design:type", String)
 ], Member.prototype, "role", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 'Pending', enum: ['Pending', 'Active', 'Suspended', 'Expired'], index: true }),
+    __metadata("design:type", String)
+], Member.prototype, "status", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: ['Student', 'Associate', 'Full', 'Fellow'] }),
+    __metadata("design:type", String)
+], Member.prototype, "category", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: {
+            passport: String,
+            qualification: String,
+            license: String,
+            cv: String,
+            id: String,
+            proofOfPayment: String,
+            referee: String,
+        },
+        default: {}
+    }),
+    __metadata("design:type", Object)
+], Member.prototype, "documents", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: {
+            bio: String,
+            portfolio: String,
+            education: [String],
+            experience: [String],
+        },
+        default: {}
+    }),
+    __metadata("design:type", Object)
+], Member.prototype, "professionalProfile", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Date)
+], Member.prototype, "expiryDate", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: true }),
     __metadata("design:type", Boolean)
@@ -59,6 +104,10 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Member.prototype, "profileImage", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ select: false }),
+    __metadata("design:type", String)
+], Member.prototype, "password", void 0);
 exports.Member = Member = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Member);

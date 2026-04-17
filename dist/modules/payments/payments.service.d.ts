@@ -18,4 +18,6 @@ export declare class PaymentsService {
     }): Promise<any>;
     findAll(): Promise<PaymentDocument[]>;
     updateStatus(reference: string, status: string): Promise<PaymentDocument>;
+    bulkUpsert(data: any[]): Promise<any>;
+    findAllExport(): Promise<any[]>;
 }

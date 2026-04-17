@@ -8,14 +8,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatModule = void 0;
 const common_1 = require("@nestjs/common");
-const chat_service_1 = require("./chat.service");
+const mongoose_1 = require("@nestjs/mongoose");
 const chat_gateway_1 = require("./chat.gateway");
+const chat_service_1 = require("./chat.service");
+const chat_message_schema_1 = require("./schemas/chat-message.schema");
+const cms_module_1 = require("../cms/cms.module");
 let ChatModule = class ChatModule {
 };
 exports.ChatModule = ChatModule;
 exports.ChatModule = ChatModule = __decorate([
     (0, common_1.Module)({
-        providers: [chat_service_1.ChatService, chat_gateway_1.ChatGateway],
+        imports: [
+            mongoose_1.MongooseModule.forFeature([{ name: chat_message_schema_1.ChatMessage.name, schema: chat_message_schema_1.ChatMessageSchema }]),
+            cms_module_1.CmsModule,
+        ],
+        providers: [chat_gateway_1.ChatGateway, chat_service_1.ChatService],
         exports: [chat_service_1.ChatService],
     })
 ], ChatModule);

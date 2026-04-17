@@ -14,7 +14,7 @@ export class Appointment {
   @Prop()
   phoneNumber: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, index: true })
   date: Date;
 
   @Prop({ required: true })
@@ -23,7 +23,7 @@ export class Appointment {
   @Prop({ required: true })
   purpose: string;
 
-  @Prop({ default: 'pending', enum: ['pending', 'confirmed', 'cancelled', 'completed'] })
+  @Prop({ default: 'pending', enum: ['pending', 'confirmed', 'cancelled', 'completed'], index: true })
   status: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Member' })

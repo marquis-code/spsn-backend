@@ -25,7 +25,7 @@ let CloudinaryService = class CloudinaryService {
     }
     async uploadImage(file, folder = 'scpsn') {
         return new Promise((resolve, reject) => {
-            cloudinary_1.v2.uploader.upload_stream({ folder }, (error, result) => {
+            cloudinary_1.v2.uploader.upload_stream({ folder, resource_type: 'auto' }, (error, result) => {
                 if (error)
                     return reject(error);
                 resolve(result);

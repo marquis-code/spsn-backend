@@ -10,4 +10,6 @@ export declare class ConferencesService {
     findOne(id: string): Promise<ConferenceDocument>;
     update(id: string, updateConferenceDto: any): Promise<ConferenceDocument>;
     delete(id: string): Promise<any>;
+    bulkUpsert(data: any[]): Promise<any>;
+    findAllExport(): Promise<any[]>;
 }

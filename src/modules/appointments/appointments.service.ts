@@ -15,13 +15,13 @@ export class AppointmentsService {
   }
 
   async findAll(): Promise<AppointmentDocument[]> {
-    return this.appointmentModel.find().populate('member').sort({ date: 1, time: 1 }).exec();
+    return this.appointmentModel.find().populate('member').sort({ date: 1, time: 1 }).lean().exec() as any;
   }
 
   async findOne(id: string): Promise<AppointmentDocument> {
-    const appointment = await this.appointmentModel.findById(id).populate('member').exec();
+    const appointment = await this.appointmentModel.findById(id).populate('member').lean().exec();
     if (!appointment) throw new NotFoundException('Appointment not found');
-    return appointment;
+    return appointment as any;
   }
 
   async update(id: string, updateAppointmentDto: any): Promise<AppointmentDocument> {
@@ -36,5 +36,20 @@ export class AppointmentsService {
     const result = await this.appointmentModel.findByIdAndDelete(id).exec();
     if (!result) throw new NotFoundException('Appointment not found');
     return result;
+  }
+
+  async bulkUpsert(data: any[]): Promise<any> {
+    const ops = data.map(item => ({
+      updateOne: {
+        filter: { member: item.member, date: item.date, time: item.time },
+        update: { $set: item },
+        upsert: true,
+      },
+    }));
+    return this.appointmentModel.bulkWrite(ops);
+  }
+
+  async findAllExport(): Promise<any[]> {
+    return this.appointmentModel.find().populate('member', 'fullName email').lean().exec();
   }
 }

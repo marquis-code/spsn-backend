@@ -17,10 +17,10 @@ export class Abstract {
   @Prop({ required: true })
   authorEmail: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Conference', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Conference', required: true, index: true })
   conference: Types.ObjectId;
 
-  @Prop({ default: 'pending', enum: ['pending', 'under_review', 'accepted', 'rejected'] })
+  @Prop({ default: 'pending', enum: ['pending', 'under_review', 'accepted', 'rejected'], index: true })
   status: string;
 
   @Prop()

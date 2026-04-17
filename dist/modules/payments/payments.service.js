@@ -90,7 +90,7 @@ let PaymentsService = class PaymentsService {
         throw new common_1.InternalServerErrorException('Failed to initiate payment');
     }
     async findAll() {
-        return this.paymentModel.find().populate('member').sort({ createdAt: -1 }).exec();
+        return this.paymentModel.find().populate('member').sort({ createdAt: -1 }).lean().exec();
     }
     async updateStatus(reference, status) {
         const updatedPayment = await this.paymentModel
@@ -99,6 +99,19 @@ let PaymentsService = class PaymentsService {
         if (!updatedPayment)
             throw new common_1.NotFoundException('Payment record not found');
         return updatedPayment;
+    }
+    async bulkUpsert(data) {
+        const ops = data.map(item => ({
+            updateOne: {
+                filter: { reference: item.reference },
+                update: { $set: item },
+                upsert: true,
+            },
+        }));
+        return this.paymentModel.bulkWrite(ops);
+    }
+    async findAllExport() {
+        return this.paymentModel.find().populate('member', 'fullName email').lean().exec();
     }
 };
 exports.PaymentsService = PaymentsService;
