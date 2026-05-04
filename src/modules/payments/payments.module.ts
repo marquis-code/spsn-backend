@@ -3,7 +3,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PaymentsService } from './payments.service';
 import { PaymentsController } from './payments.controller';
 import { Payment, PaymentSchema } from './schemas/payment.schema';
-import { FlutterwaveService } from './flutterwave.service';
 import { PaystackService } from './paystack.service';
 
 @Module({
@@ -11,7 +10,7 @@ import { PaystackService } from './paystack.service';
     MongooseModule.forFeature([{ name: Payment.name, schema: PaymentSchema }]),
   ],
   controllers: [PaymentsController],
-  providers: [PaymentsService, FlutterwaveService, PaystackService],
+  providers: [PaymentsService, PaystackService],
   exports: [PaymentsService],
 })
 export class PaymentsModule {}

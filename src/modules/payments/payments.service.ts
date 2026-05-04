@@ -2,14 +2,12 @@ import { Injectable, NotFoundException, InternalServerErrorException } from '@ne
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Payment, PaymentDocument } from './schemas/payment.schema';
-import { FlutterwaveService } from './flutterwave.service';
 import { PaystackService } from './paystack.service';
 
 @Injectable()
 export class PaymentsService {
   constructor(
     @InjectModel(Payment.name) private paymentModel: Model<PaymentDocument>,
-    private flutterwaveService: FlutterwaveService,
     private paystackService: PaystackService,
   ) {}
 
@@ -24,41 +22,12 @@ export class PaymentsService {
     fullName: string;
     phone: string;
     purpose: string; // e.g., 'MEMBERSHIP_FEE', 'CONFERENCE_REG', 'EXAM_REGISTRATION'
-    gateway: 'FLUTTERWAVE' | 'PAYSTACK';
+    gateway: 'PAYSTACK' | 'PAYSTACK_VIRTUAL_ACCOUNT';
   }) {
     const tx_ref = `SCPSN-${Date.now()}`;
     const redirect_url = 'http://localhost:3000/payment-callback';
 
-    if (paymentData.gateway === 'FLUTTERWAVE') {
-      const payload = {
-        tx_ref,
-        amount: paymentData.amount,
-        currency: 'NGN',
-        redirect_url,
-        customer: {
-          email: paymentData.email,
-          phonenumber: paymentData.phone,
-          name: paymentData.fullName,
-        },
-        customizations: {
-          title: 'SCPSN Payments',
-          description: paymentData.purpose,
-          logo: 'https://scpsn.org.ng/logo.png',
-        },
-      };
-
-      const response = await this.flutterwaveService.initiatePayment(payload);
-      if (response.status === 'success') {
-        await this.create({
-          amount: paymentData.amount,
-          reference: tx_ref,
-          status: 'PENDING',
-          paymentMethod: 'FLUTTERWAVE',
-          transactionDetails: response.data,
-        });
-        return response.data.link;
-      }
-    } else if (paymentData.gateway === 'PAYSTACK') {
+    if (paymentData.gateway === 'PAYSTACK') {
       const payload = {
         email: paymentData.email,
         amount: paymentData.amount,
