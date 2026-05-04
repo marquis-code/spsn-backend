@@ -162,6 +162,70 @@ export class SiteConfig {
     category: string;
     publishDate: Date;
   }[];
+
+  // Membership & Pricing Logic
+  @Prop({
+    type: {
+      newRegistrationFee: { type: Number, default: 20000 },
+      renewalFee: { type: Number, default: 10000 },
+      bankName: { type: String, default: 'UBA' },
+      accountNumber: { type: String, default: '1023844239' },
+      accountName: { type: String, default: 'SCPSN' },
+      registrationDeadline: { type: Date, default: new Date('2026-12-31') },
+      telegramLink: { type: String, default: 'https://t.me/scpsn_members' }
+    },
+    default: {}
+  })
+  // Digitalized Membership Note Content
+  @Prop({
+    type: {
+      about: String,
+      leadership: [{ name: String, tenure: String }],
+      benefits: [String],
+      newRegistrationFee: { type: Number, default: 20000 },
+      renewalFee: { type: Number, default: 10000 },
+      bankName: { type: String, default: 'UBA' },
+      accountNumber: { type: String, default: '1023844239' },
+      accountName: { type: String, default: 'SCPSN' },
+      registrationDeadline: { type: Date, default: new Date('2026-12-31') },
+      contactPersons: [{ name: String, phone: String }],
+      telegramLink: { type: String, default: 'https://t.me/scpsn_members' }
+    },
+    default: {
+      about: 'Founded in 2007 in Ilorin, Kwara State, SCPSN is the first recognised subgroup of AMLSN. It remains the official professional voice for Histoscientists and Cytologists in Nigeria.',
+      leadership: [
+        { name: 'Pa Joseph Ogunwuyi', tenure: '2007–2017' },
+        { name: 'Prof. Godwin Awvioro', tenure: '2017–2021' },
+        { name: 'Dr. Jonathan Madukwe', tenure: '2021–2025' },
+        { name: 'MLS Bankole Julius Kayode', tenure: '2025–2029' }
+      ],
+      benefits: [
+        'Specialised training (Histopathology, Cytology, IHC, Molecular Techniques, NGS, Forensic & Museum Science)',
+        'CPD credits and mentorship',
+        'Local and international networking',
+        'Job and volunteer opportunities',
+        'Members-only discounts on trainings',
+        'Professional recommendations'
+      ],
+      contactPersons: [
+        { name: 'Rosemary', phone: '07014135655' },
+        { name: 'Fawaz', phone: '0813 896 0499' }
+      ]
+    }
+  })
+  membershipSettings: {
+    about: string;
+    leadership: { name: string, tenure: string }[];
+    benefits: string[];
+    newRegistrationFee: number;
+    renewalFee: number;
+    bankName: string;
+    accountNumber: string;
+    accountName: string;
+    registrationDeadline: Date;
+    contactPersons: { name: string, phone: string }[];
+    telegramLink: string;
+  };
 }
 
 export const SiteConfigSchema = SchemaFactory.createForClass(SiteConfig);

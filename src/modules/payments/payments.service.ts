@@ -81,6 +81,28 @@ export class PaymentsService {
         });
         return response.data.authorization_url;
       }
+    } else if (paymentData.gateway === 'PAYSTACK_VIRTUAL_ACCOUNT') {
+      // First create/get customer
+      const customerRes = await this.paystackService.createCustomer({
+        email: paymentData.email,
+        first_name: paymentData.fullName.split(' ')[0],
+        last_name: paymentData.fullName.split(' ')[1] || '',
+        phone: paymentData.phone
+      });
+
+      if (customerRes.status) {
+        const dvaRes = await this.paystackService.createDedicatedAccount(customerRes.data.customer_code);
+        if (dvaRes.status) {
+           await this.create({
+            amount: paymentData.amount,
+            reference: `DVA-${Date.now()}`,
+            status: 'PENDING',
+            paymentMethod: 'PAYSTACK_VIRTUAL_ACCOUNT',
+            transactionDetails: dvaRes.data,
+          });
+          return dvaRes.data;
+        }
+      }
     }
 
     throw new InternalServerErrorException('Failed to initiate payment');

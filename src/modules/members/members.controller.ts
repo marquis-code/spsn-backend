@@ -86,6 +86,11 @@ export class MembersController {
     return this.membersService.findAll();
   }
 
+  @Get('board')
+  findBoardMembers() {
+    return this.membersService.findBoardMembers();
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('me')
   getMe(@Req() req: any) {

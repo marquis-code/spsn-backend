@@ -21,6 +21,7 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { MailModule } from './modules/mail/mail.module';
 import { CmsModule } from './modules/cms/cms.module';
 import { ExcelModule } from './modules/excel/excel.module';
+import { NewslettersModule } from './modules/newsletters/newsletters.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { ExcelModule } from './modules/excel/excel.module';
     MailModule,
     CmsModule,
     ExcelModule,
+    NewslettersModule,
   ],
   controllers: [AppController],
   providers: [

@@ -64,6 +64,12 @@ export class Member {
     experience: string[];
   };
 
+  @Prop({ default: false, index: true })
+  isBoardMember: boolean;
+
+  @Prop()
+  designation: string;
+
   @Prop()
   expiryDate: Date;
 
@@ -79,8 +85,36 @@ export class Member {
   @Prop()
   profileImage: string;
 
+  @Prop({
+    type: {
+      membershipType: { type: String, enum: ['New', 'Renewal'] },
+      amountPaid: Number,
+      paymentReference: String,
+      proofOfPaymentUrl: String,
+      institution: String,
+      paymentStatus: { type: String, default: 'Pending', enum: ['Pending', 'Verified', 'Rejected'] },
+      enrollmentDate: { type: Date, default: Date.now },
+    },
+    default: {}
+  })
+  enrollmentInfo: {
+    membershipType: string;
+    amountPaid: number;
+    paymentReference: string;
+    proofOfPaymentUrl: string;
+    institution: string;
+    paymentStatus: string;
+    enrollmentDate: Date;
+  };
+
   @Prop({ select: false })
   password?: string;
+
+  @Prop({ select: false })
+  forgotPasswordToken?: string;
+
+  @Prop({ select: false })
+  forgotPasswordExpires?: Date;
 }
 
 export const MemberSchema = SchemaFactory.createForClass(Member);

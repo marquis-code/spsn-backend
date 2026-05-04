@@ -34,6 +34,10 @@ export class MembersService {
     return this.memberModel.find().sort({ createdAt: -1 }).lean().exec() as any;
   }
 
+  async findBoardMembers(): Promise<MemberDocument[]> {
+    return this.memberModel.find({ isBoardMember: true, isActive: true }).sort({ createdAt: -1 }).lean().exec() as any;
+  }
+
   async findOne(id: string): Promise<MemberDocument> {
     const member = await this.memberModel.findById(id).lean().exec();
     if (!member) throw new NotFoundException('Member not found');

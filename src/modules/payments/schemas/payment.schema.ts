@@ -5,26 +5,26 @@ export type PaymentDocument = Payment & Document;
 
 @Schema({ timestamps: true })
 export class Payment {
+  @Prop({ type: Types.ObjectId, ref: 'Member', required: true })
+  member: Types.ObjectId;
+
   @Prop({ required: true })
   reference: string;
 
   @Prop({ required: true })
   amount: number;
 
-  @Prop({ required: true })
-  email: string;
+  @Prop({ default: 'pending' })
+  status: 'pending' | 'success' | 'failed';
 
-  @Prop({ type: Types.ObjectId, ref: 'Member' })
-  member: Types.ObjectId;
-
-  @Prop({ required: true })
-  purpose: string; // e.g., 'Membership Fee', 'Conference Registration'
-
-  @Prop({ default: 'pending', enum: ['pending', 'successful', 'failed'] })
-  status: string;
+  @Prop()
+  channel: string; // card, bank_transfer, etc
 
   @Prop({ type: Object })
-  metadata: Record<string, any>;
+  metadata: any;
+
+  @Prop()
+  paidAt: Date;
 }
 
 export const PaymentSchema = SchemaFactory.createForClass(Payment);
