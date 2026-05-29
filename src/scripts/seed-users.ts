@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import * as bcrypt from 'bcrypt';
 
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
@@ -23,6 +24,7 @@ const MemberSchema = new mongoose.Schema({
   category: String,
   isActive: Boolean,
   firebaseUid: String,
+  password: { type: String, select: false },
 }, { timestamps: true });
 
 const Member = mongoose.model('Member', MemberSchema);
@@ -32,10 +34,17 @@ async function seed() {
     await mongoose.connect(uri);
     console.log('Connected to MongoDB');
 
+    const adminPassword = 'AdminSecure2026!';
+    const hashedAdminPassword = await bcrypt.hash(adminPassword, 10);
+    console.log(`Generated Admin Password for abahmarquis@gmail.com: ${adminPassword}`);
+
+    const memberPassword = 'MemberSecure2026!';
+    const hashedMemberPassword = await bcrypt.hash(memberPassword, 10);
+
     const users = [
       {
         fullName: 'System Administrator',
-        email: 'admin@scpsn.org.ng',
+        email: 'abahmarquis@gmail.com',
         phoneNumber: '08012345678',
         membershipId: 'ADMIN-001',
         role: 'admin',
@@ -43,6 +52,7 @@ async function seed() {
         category: 'Full',
         isActive: true,
         firebaseUid: 'mock-admin-uid',
+        password: hashedAdminPassword,
       },
       {
         fullName: 'Test Member',
@@ -54,6 +64,7 @@ async function seed() {
         category: 'Full',
         isActive: true,
         firebaseUid: 'mock-member-uid',
+        password: hashedMemberPassword,
       }
     ];
 

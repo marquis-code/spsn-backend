@@ -8,17 +8,26 @@ export class Abstract {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true })
-  content: string;
+  @Prop({ required: false })
+  abstractBody: string;
+
+  @Prop({ required: false })
+  fileUrl: string;
 
   @Prop({ required: true })
-  authorName: string;
+  primaryAuthor: string;
 
   @Prop({ required: true })
-  authorEmail: string;
+  email: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Conference', required: true, index: true })
-  conference: Types.ObjectId;
+  @Prop()
+  affiliation: string;
+
+  @Prop([String])
+  keywords: string[];
+
+  @Prop({ type: String, required: false, index: true })
+  conference: string;
 
   @Prop({ default: 'pending', enum: ['pending', 'under_review', 'accepted', 'rejected'], index: true })
   status: string;

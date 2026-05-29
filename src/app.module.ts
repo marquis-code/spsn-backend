@@ -22,6 +22,7 @@ import { MailModule } from './modules/mail/mail.module';
 import { CmsModule } from './modules/cms/cms.module';
 import { ExcelModule } from './modules/excel/excel.module';
 import { NewslettersModule } from './modules/newsletters/newsletters.module';
+import { CampaignsModule } from './modules/campaigns/campaigns.module';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { NewslettersModule } from './modules/newsletters/newsletters.module';
     CmsModule,
     ExcelModule,
     NewslettersModule,
+    CampaignsModule,
   ],
   controllers: [AppController],
   providers: [

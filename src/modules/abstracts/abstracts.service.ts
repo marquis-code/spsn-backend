@@ -2,16 +2,20 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Abstract, AbstractDocument } from './schemas/abstract.schema';
+import { AbstractsGateway } from './abstracts.gateway';
 
 @Injectable()
 export class AbstractsService {
   constructor(
     @InjectModel(Abstract.name) private abstractModel: Model<AbstractDocument>,
+    private readonly abstractsGateway: AbstractsGateway,
   ) {}
 
   async create(createAbstractDto: any): Promise<AbstractDocument> {
     const createdAbstract = new this.abstractModel(createAbstractDto);
-    return createdAbstract.save();
+    const saved = await createdAbstract.save();
+    this.abstractsGateway.notifyNewAbstract(saved);
+    return saved;
   }
 
   async findAll(): Promise<AbstractDocument[]> {

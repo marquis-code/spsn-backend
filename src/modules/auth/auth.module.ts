@@ -8,6 +8,7 @@ import { FirebaseStrategy } from './firebase.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { MembersModule } from '../members/members.module';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
     }),
     MembersModule,
     CloudinaryModule,
+    MailModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, FirebaseStrategy, JwtStrategy],

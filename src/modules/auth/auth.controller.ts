@@ -1,6 +1,7 @@
 import { Controller, Post, Body, UnauthorizedException, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -10,6 +11,11 @@ export class AuthController {
   async login(@Body() body: any) {
     const { email, password } = body;
     return this.authService.login(email, password);
+  }
+
+  @Post('verify-2fa')
+  async verify2FA(@Body() body: VerifyOtpDto) {
+    return this.authService.verify2FA(body.email, body.otp);
   }
 
   @Post('register')
