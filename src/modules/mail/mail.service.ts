@@ -111,4 +111,25 @@ export class MailService {
     console.log(`[MailService] Sent Password Reset to ${email}, success: ${res.success}`);
     return res;
   }
+
+  async sendAnnualDuesReminder(email: string, fullName: string) {
+    const html = `
+      <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; border: 1px solid #f1f5f9; border-radius: 24px;">
+        <h2 style="color: #003366; font-size: 24px; font-weight: 900; margin-bottom: 20px; text-transform: lowercase;">annual dues reminder</h2>
+        <p style="color: #64748b; line-height: 1.6; font-size: 14px;">Dear ${fullName}, this is a friendly reminder from the <strong>Society for Cellular Pathology Scientists of Nigeria</strong>.</p>
+        <div style="margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0;">
+          <p style="margin: 0; font-size: 12px; font-weight: bold; color: #003366; text-transform: lowercase;">action required:</p>
+          <ul style="color: #64748b; font-size: 13px; margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+            <li>Please ensure your annual dues for the current year are paid.</li>
+            <li>Dues are payable in January of each year.</li>
+            <li><strong>First-time members:</strong> ₦20,000</li>
+            <li><strong>Returning members:</strong> ₦10,000</li>
+            <li>Login to the Member Portal to securely upload your transfer receipt.</li>
+          </ul>
+        </div>
+        <p style="margin-top: 30px; font-size: 12px; color: #94a3b8;">This is a system notification from the SCPSN administrative network.</p>
+      </div>
+    `;
+    return this.sendMail(email, 'SCPSN - Annual Dues Payment Reminder', html);
+  }
 }

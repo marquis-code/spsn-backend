@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException, BadRequestException, ConflictException, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
@@ -102,7 +102,7 @@ export class AuthService {
 
     const existingUser = await this.memberModel.findOne({ email }).exec();
     if (existingUser) {
-      throw new UnauthorizedException('Member with this email already exists');
+      throw new ConflictException('A member with this email already exists. If you are renewing, please use a different email or contact support.');
     }
 
     let proofOfPaymentUrl = '';

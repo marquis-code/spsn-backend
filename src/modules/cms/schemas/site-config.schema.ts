@@ -168,9 +168,14 @@ export class SiteConfig {
     type: {
       newRegistrationFee: { type: Number, default: 20000 },
       renewalFee: { type: Number, default: 10000 },
-      bankName: { type: String, default: 'UBA' },
-      accountNumber: { type: String, default: '1023844239' },
-      accountName: { type: String, default: 'SCPSN' },
+      duesAccount: {
+        type: { bankName: String, accountNumber: String, accountName: String },
+        default: { bankName: 'UBA', accountNumber: '1023844239', accountName: 'SCPSN' }
+      },
+      conferenceAccount: {
+        type: { bankName: String, accountNumber: String, accountName: String },
+        default: { bankName: 'ACCESS BANK', accountNumber: '0800585701', accountName: 'SCPSN' }
+      },
       registrationDeadline: { type: Date, default: new Date('2026-12-31') },
       telegramLink: { type: String, default: 'https://t.me/scpsn_members' }
     },
@@ -184,9 +189,14 @@ export class SiteConfig {
       benefits: [String],
       newRegistrationFee: { type: Number, default: 20000 },
       renewalFee: { type: Number, default: 10000 },
-      bankName: { type: String, default: 'UBA' },
-      accountNumber: { type: String, default: '1023844239' },
-      accountName: { type: String, default: 'SCPSN' },
+      duesAccount: {
+        type: { bankName: String, accountNumber: String, accountName: String },
+        default: { bankName: 'UBA', accountNumber: '1023844239', accountName: 'SCPSN' }
+      },
+      conferenceAccount: {
+        type: { bankName: String, accountNumber: String, accountName: String },
+        default: { bankName: 'ACCESS BANK', accountNumber: '0800585701', accountName: 'SCPSN' }
+      },
       registrationDeadline: { type: Date, default: new Date('2026-12-31') },
       contactPersons: [{ name: String, phone: String }],
       telegramLink: { type: String, default: 'https://t.me/scpsn_members' }
@@ -219,9 +229,8 @@ export class SiteConfig {
     benefits: string[];
     newRegistrationFee: number;
     renewalFee: number;
-    bankName: string;
-    accountNumber: string;
-    accountName: string;
+    duesAccount: { bankName: string; accountNumber: string; accountName: string; };
+    conferenceAccount: { bankName: string; accountNumber: string; accountName: string; };
     registrationDeadline: Date;
     contactPersons: { name: string, phone: string }[];
     telegramLink: string;

@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ScheduleModule } from '@nestjs/schedule';
 import { redisStore } from 'cache-manager-redis-yet';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -21,14 +22,18 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { MailModule } from './modules/mail/mail.module';
 import { CmsModule } from './modules/cms/cms.module';
 import { ExcelModule } from './modules/excel/excel.module';
+import { GalleryModule } from './modules/gallery/gallery.module';
 import { NewslettersModule } from './modules/newsletters/newsletters.module';
 import { CampaignsModule } from './modules/campaigns/campaigns.module';
+import { AdvertsModule } from './modules/adverts/adverts.module';
+import { SponsorsModule } from './modules/sponsors/sponsors.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -71,8 +76,11 @@ import { CampaignsModule } from './modules/campaigns/campaigns.module';
     MailModule,
     CmsModule,
     ExcelModule,
+    GalleryModule,
     NewslettersModule,
     CampaignsModule,
+    AdvertsModule,
+    SponsorsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -80,10 +88,6 @@ import { CampaignsModule } from './modules/campaigns/campaigns.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
     },
   ],
 })

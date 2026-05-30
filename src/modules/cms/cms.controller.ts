@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Body, Param } from '@nestjs/common';
+import { Controller, Get, Patch, Body, Param, Query } from '@nestjs/common';
 import { CmsService } from './cms.service';
 
 @Controller('cms')
@@ -6,8 +6,8 @@ export class CmsController {
   constructor(private readonly cmsService: CmsService) {}
 
   @Get()
-  getConfig() {
-    return this.cmsService.getConfig();
+  getConfig(@Query('lang') lang?: string) {
+    return this.cmsService.getConfig(lang || 'en');
   }
 
   @Patch()

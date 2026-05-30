@@ -157,7 +157,7 @@ If you don't know something specific, direct users to contact the admin through 
     }
 
     if (message.includes('abstract') || message.includes('submit') || message.includes('paper')) {
-      return 'Scientific abstracts can be submitted through our Abstract Portal. Submissions include real-time word count tracking and category selection. Visit the Abstracts page to get started!';
+      return 'Scientific abstracts can be submitted through our Abstract Portal. Submissions include real-time word count  and category selection. Visit the Abstracts page to get started!';
     }
 
     if (message.includes('payment') || message.includes('pay') || message.includes('dues') || message.includes('fee')) {

@@ -25,6 +25,12 @@ export class Payment {
 
   @Prop()
   paidAt: Date;
+
+  @Prop()
+  receiptUrl: string;
+
+  @Prop()
+  rejectionReason: string;
 }
 
 export const PaymentSchema = SchemaFactory.createForClass(Payment);

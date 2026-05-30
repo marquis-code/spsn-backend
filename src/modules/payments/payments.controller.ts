@@ -85,10 +85,26 @@ export class PaymentsController {
   }
 
   @Patch(':reference/status')
+  @UseGuards(FirebaseAuthGuard)
   updateStatus(
     @Param('reference') reference: string,
     @Body('status') status: string,
   ) {
     return this.paymentsService.updateStatus(reference, status);
+  }
+
+  @Patch(':id/approve')
+  @UseGuards(FirebaseAuthGuard)
+  approvePayment(@Param('id') id: string) {
+    return this.paymentsService.approvePayment(id);
+  }
+
+  @Patch(':id/reject')
+  @UseGuards(FirebaseAuthGuard)
+  rejectPayment(
+    @Param('id') id: string,
+    @Body('reason') reason: string,
+  ) {
+    return this.paymentsService.rejectPayment(id, reason);
   }
 }

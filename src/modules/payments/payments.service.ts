@@ -103,4 +103,24 @@ export class PaymentsService {
   async findAllExport(): Promise<any[]> {
     return this.paymentModel.find().populate('member', 'fullName email').lean().exec();
   }
+
+  async approvePayment(id: string): Promise<PaymentDocument> {
+    const payment = await this.paymentModel.findByIdAndUpdate(
+      id,
+      { status: 'success' },
+      { new: true }
+    ).exec();
+    if (!payment) throw new NotFoundException('Payment not found');
+    return payment;
+  }
+
+  async rejectPayment(id: string, reason: string): Promise<PaymentDocument> {
+    const payment = await this.paymentModel.findByIdAndUpdate(
+      id,
+      { status: 'failed', rejectionReason: reason },
+      { new: true }
+    ).exec();
+    if (!payment) throw new NotFoundException('Payment not found');
+    return payment;
+  }
 }
