@@ -4,7 +4,8 @@ const bcrypt = require('bcrypt');
 const admins = [
   { email: 'Kayjulius2@gmail.com', fullName: 'Juliu Bankole' },
   { email: 'Pennystockprof@gmail.com', fullName: 'Benard Solomon' },
-  { email: 'ruthekhator1@gmail.com', fullName: 'Ruth Eghator' }
+  { email: 'ruthekhator1@gmail.com', fullName: 'Ruth Eghator' },
+  { email: 'markeyz.code@gmail.com', fullName: 'Markeyz Code' }
 ];
 
 async function seed() {

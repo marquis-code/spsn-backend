@@ -39,11 +39,11 @@ export class FirebaseStrategy extends PassportStrategy(Strategy, 'firebase-auth'
     try {
       const firebaseUser = await admin.auth().verifyIdToken(token);
       if (!firebaseUser) {
-        throw new UnauthorizedException();
+        return null;
       }
       return firebaseUser;
     } catch (err) {
-      throw new UnauthorizedException('Invalid firebase token');
+      return null;
     }
   }
 }

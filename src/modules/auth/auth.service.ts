@@ -80,7 +80,11 @@ export class AuthService {
       if (email === 'admin@scpsn.org.ng' || email === 'member@scpsn.org.ng') {
         const payload = { email: email, sub: 'fallback-id' };
         return {
-          user: { email, role: email.startsWith('admin') ? 'admin' : 'regular' },
+          user: { 
+            email, 
+            role: email.startsWith('admin') ? 'super_admin' : 'regular',
+            permissions: []
+          },
           token: this.jwtService.sign(payload),
         };
       }
@@ -92,7 +96,10 @@ export class AuthService {
     
     const payload = { email: user.email, sub: user._id };
     return {
-      user: userObj,
+      user: {
+        ...userObj,
+        permissions: userObj.permissions || []
+      },
       token: this.jwtService.sign(payload),
     };
   }

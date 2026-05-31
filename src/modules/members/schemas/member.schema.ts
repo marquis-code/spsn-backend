@@ -17,8 +17,11 @@ export class Member {
   @Prop()
   membershipId: string;
 
-  @Prop({ default: 'regular', enum: ['regular', 'student', 'fellow', 'admin'], index: true })
+  @Prop({ default: 'regular', enum: ['regular', 'student', 'fellow', 'admin', 'super_admin'], index: true })
   role: string;
+
+  @Prop({ type: [String], default: [] })
+  permissions: string[];
 
   @Prop({ default: 'Pending', enum: ['Pending', 'Active', 'Suspended', 'Expired'], index: true })
   status: string;

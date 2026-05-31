@@ -27,6 +27,8 @@ import { NewslettersModule } from './modules/newsletters/newsletters.module';
 import { CampaignsModule } from './modules/campaigns/campaigns.module';
 import { AdvertsModule } from './modules/adverts/adverts.module';
 import { SponsorsModule } from './modules/sponsors/sponsors.module';
+import { ExcosModule } from './modules/excos/excos.module';
+import { AdminsModule } from './modules/admins/admins.module';
 
 @Module({
   imports: [
@@ -81,6 +83,8 @@ import { SponsorsModule } from './modules/sponsors/sponsors.module';
     CampaignsModule,
     AdvertsModule,
     SponsorsModule,
+    ExcosModule,
+    AdminsModule,
   ],
   controllers: [AppController],
   providers: [
