@@ -11,6 +11,6 @@ import { TranslationService } from './translation.service';
   ],
   controllers: [CmsController],
   providers: [CmsService, TranslationService],
-  exports: [CmsService],
+  exports: [CmsService, TranslationService],
 })
 export class CmsModule {}

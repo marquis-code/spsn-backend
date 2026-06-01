@@ -87,9 +87,12 @@ export class NewslettersService {
     return this.subscriptionModel.find().populate('categories').sort({ createdAt: -1 }).exec();
   }
 
-  async subscribe(email: string, categoryIds: string[], fullName?: string) {
-    const categories = await this.categoryModel.find({ _id: { $in: categoryIds } }).exec();
-    if (categories.length === 0) throw new NotFoundException('No valid categories found');
+  async subscribe(email: string, categoryIds: string[] = [], fullName?: string, proofOfPayment?: string) {
+    let categories: any[] = [];
+    if (categoryIds && categoryIds.length > 0) {
+      categories = await this.categoryModel.find({ _id: { $in: categoryIds } }).exec();
+      if (categories.length === 0) throw new NotFoundException('No valid categories found');
+    }
 
     const totalAmount = categories.reduce((sum, cat) => sum + cat.price, 0);
     
@@ -107,23 +110,18 @@ export class NewslettersService {
       subscription.categories = categoryIds as any;
       subscription.totalAmount = totalAmount;
       subscription.isPaid = totalAmount === 0; // If they picked free ones only, they are paid.
+      if (proofOfPayment) {
+        subscription.proofOfPayment = proofOfPayment;
+      }
+    }
+
+    if (proofOfPayment && !subscription.proofOfPayment) {
+      subscription.proofOfPayment = proofOfPayment;
     }
 
     if (totalAmount > 0) {
-      // Initiate Paystack payment
-      const paymentUrl = await this.paymentsService.initiatePayment({
-        amount: totalAmount * 100, // Kobo
-        email,
-        fullName: fullName || email.split('@')[0],
-        phone: '0000000000',
-        purpose: 'NEWSLETTER_SUBSCRIPTION',
-        gateway: 'PAYSTACK'
-      });
-      // In a real flow, the payment reference needs to be tracked. 
-      // PaymentsService internally creates a Payment record. We'll find a way to link it if needed.
-      // For now, we return the paymentUrl.
       await subscription.save();
-      return { success: true, paymentUrl, subscription };
+      return { success: true, message: 'Subscription created. Pending payment verification.', subscription };
     }
 
     await subscription.save();

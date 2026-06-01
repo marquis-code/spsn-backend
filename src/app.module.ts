@@ -6,6 +6,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
 import { redisStore } from 'cache-manager-redis-yet';
+import { TranslationInterceptor } from './modules/cms/translation.interceptor';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MembersModule } from './modules/members/members.module';
@@ -92,6 +93,10 @@ import { AdminsModule } from './modules/admins/admins.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TranslationInterceptor,
     },
   ],
 })

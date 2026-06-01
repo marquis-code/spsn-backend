@@ -64,8 +64,8 @@ export class NewslettersController {
   }
 
   @Post('subscribe')
-  subscribe(@Body() body: { email: string; categoryIds: string[]; fullName?: string }) {
-    return this.newslettersService.subscribe(body.email, body.categoryIds, body.fullName);
+  subscribe(@Body() body: { email: string; categoryIds: string[]; fullName?: string; proofOfPayment?: string }) {
+    return this.newslettersService.subscribe(body.email, body.categoryIds, body.fullName, body.proofOfPayment);
   }
 
   @Post('callback')

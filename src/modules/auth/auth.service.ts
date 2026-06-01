@@ -105,7 +105,11 @@ export class AuthService {
   }
 
   async register(body: any, file?: Express.Multer.File) {
-    const { fullName, email, password, phone, institution, membershipType, role } = body;
+    const { fullName, email, password, phone, institution, membershipType, role, membershipId } = body;
+
+    if (!membershipId) {
+      throw new BadRequestException('RA/RF Number (membershipId) is required for registration.');
+    }
 
     const existingUser = await this.memberModel.findOne({ email }).exec();
     if (existingUser) {
@@ -125,6 +129,7 @@ export class AuthService {
       email,
       password: hashedPassword,
       phoneNumber: phone,
+      membershipId,
       role: role || 'Regular Member',
       enrollmentInfo: {
         membershipType,

@@ -9,10 +9,10 @@ export class TranslationService {
   private readonly excludeFields = [
     'configKey', '_id', '__v', 'id', 'createdAt', 'updatedAt',
     'image', 'logoUrl', 'sidebarLogo', 'heroBg', 'loginBg', 'fileUrl', 'mapEmbedUrl',
-    'facebook', 'twitter', 'linkedin', 'instagram', 'telegramLink',
-    'email', 'phone', 'to', 'link', 'announcementLink', 'guidelinesUrl',
-    'icon', 'bankName', 'accountNumber', 'accountName',
-    'siteInitials', 'price', 'newRegistrationFee', 'renewalFee', 'registrationDeadline'
+    'facebook', 'twitter', 'linkedin', 'instagram', 'telegramLink', 'websiteUrl', 'bannerImage', 'profileImage', 'profilePicture',
+    'email', 'phone', 'to', 'link', 'announcementLink', 'guidelinesUrl', 'slug', 'status', 'role', 'type',
+    'icon', 'bankName', 'accountNumber', 'accountName', 'author', 'name', 'fullName', 'firstName', 'lastName',
+    'siteInitials', 'price', 'newRegistrationFee', 'renewalFee', 'registrationDeadline', 'startDate', 'endDate', 'date', 'token', 'password', 'code'
   ];
 
   async translateObject(obj: any, targetLang: string): Promise<any> {

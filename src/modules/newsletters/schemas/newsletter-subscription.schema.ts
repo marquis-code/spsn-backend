@@ -18,6 +18,9 @@ export class NewsletterSubscription {
   @Prop()
   paymentReference: string;
 
+  @Prop()
+  proofOfPayment: string;
+
   @Prop({ default: false })
   isPaid: boolean;
 
