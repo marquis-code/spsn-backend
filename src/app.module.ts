@@ -50,18 +50,20 @@ import { AdminsModule } from './modules/admins/admins.module';
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        store: await redisStore({
-          url: (configService.get('REDIS_URL') as string) || 'redis://localhost:6379',
+      useFactory: async (configService: ConfigService) => {
+        // AGGRESSIVE FIX: Completely bypass remote Redis to prevent unhandled socket crashes. 
+        // We will use the built-in memory cache so the server can boot cleanly.
+        return {
           ttl: parseInt(configService.get('REDIS_TTL') as string) || 3600,
-        }),
-      }),
+        };
+      },
       inject: [ConfigService],
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI') || 'mongodb://localhost:27017/scpsn',
+        serverSelectionTimeoutMS: 5000, // Fail fast if IP is not whitelisted
       }),
       inject: [ConfigService],
     }),

@@ -26,6 +26,9 @@ export class Conference {
   @Prop()
   bannerImage: string;
 
+  @Prop({ type: [String], default: [] })
+  galleryImages: string[];
+
   @Prop({ default: 'upcoming', enum: ['upcoming', 'ongoing', 'completed', 'cancelled'], index: true })
   status: string;
 
@@ -37,6 +40,9 @@ export class Conference {
 
   @Prop({ default: true })
   abstractSubmissionOpen: boolean;
+
+  @Prop({ default: true })
+  isVisible: boolean;
 }
 
 export const ConferenceSchema = SchemaFactory.createForClass(Conference);
