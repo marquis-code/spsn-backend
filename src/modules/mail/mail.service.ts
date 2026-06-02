@@ -10,13 +10,14 @@ export class MailService {
     this.resend = new Resend(this.configService.get<string>('RESEND_API_KEY') || 'mock_key');
   }
 
-  async sendMail(to: string, subject: string, html: string) {
+  async sendMail(to: string, subject: string, html: string, attachments?: any[]) {
     try {
       const { data, error } = await this.resend.emails.send({
         from: 'SCPSN <notifications@scpsn.com>',
         to,
         subject,
         html,
+        attachments,
       });
 
       if (error) {
@@ -88,6 +89,49 @@ export class MailService {
     console.log(`[MailService] Sent 2FA OTP to ${email}, success: ${res.success}`);
     return res;
   }
+
+  async sendSignupOTP(email: string, otp: string) {
+    const html = `
+      <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; border: 1px solid #f1f5f9; border-radius: 24px;">
+        <h2 style="color: #003366; font-size: 24px; font-weight: 900; margin-bottom: 20px; text-transform: lowercase;">verify your email</h2>
+        <p style="color: #64748b; line-height: 1.6; font-size: 14px;">Thank you for registering with the Society for Cellular Pathology Scientists of Nigeria. Please use the verification code below to complete your registration.</p>
+        <div style="margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0; text-align: center;">
+          <h1 style="color: #003366; font-size: 36px; font-weight: 900; margin: 0; letter-spacing: 4px;">${otp}</h1>
+          <p style="margin-top: 10px; font-size: 12px; color: #94a3b8; text-transform: lowercase;">this code expires in 15 minutes</p>
+        </div>
+        <p style="margin-top: 30px; font-size: 12px; color: #94a3b8;">If you did not initiate this registration, please ignore this email.</p>
+      </div>
+    `;
+    const res = await this.sendMail(email, 'scpsn - your registration verification code', html);
+    console.log(`[MailService] Sent Signup OTP to ${email}, success: ${res.success}`);
+    return res;
+  }
+
+  async sendWelcomeWithCertificate(email: string, fullName: string, pdfBuffer: Buffer) {
+    const html = `
+      <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; border: 1px solid #f1f5f9; border-radius: 24px;">
+        <h2 style="color: #003366; font-size: 24px; font-weight: 900; margin-bottom: 20px; text-transform: lowercase;">welcome to scpsn</h2>
+        <p style="color: #64748b; line-height: 1.6; font-size: 14px;">Congratulations <strong>${fullName}</strong>, your account has been fully verified and created.</p>
+        <p style="color: #64748b; line-height: 1.6; font-size: 14px;">Attached to this email is your official Certificate of Joining. We are thrilled to have you in the Society for Cellular Pathology Scientists of Nigeria.</p>
+        <div style="margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0;">
+          <p style="margin: 0; font-size: 12px; font-weight: bold; color: #003366; text-transform: lowercase;">next steps:</p>
+          <ul style="color: #64748b; font-size: 13px; margin-top: 10px; padding-left: 20px;">
+            <li>Login to the Member Portal</li>
+            <li>Complete your scientific profile</li>
+            <li>Connect with other pathology scientists</li>
+          </ul>
+        </div>
+      </div>
+    `;
+    const attachments = [{
+      filename: 'SCPSN_Certificate.pdf',
+      content: pdfBuffer,
+    }];
+    const res = await this.sendMail(email, 'SCPSN - Welcome & Certificate of Joining', html, attachments);
+    console.log(`[MailService] Sent Welcome with Certificate to ${email}, success: ${res.success}`);
+    return res;
+  }
+
   async sendPasswordResetMail(email: string, resetLink: string) {
     const html = `
       <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; border: 1px solid #f1f5f9; border-radius: 24px; background: #ffffff;">

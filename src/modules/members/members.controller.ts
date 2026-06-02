@@ -72,7 +72,17 @@ export class MembersController {
       status: 'Pending',
     };
 
-    return this.membersService.registerMember(memberData);
+    return this.membersService.initiateRegistration(memberData);
+  }
+
+  @Post('verify-registration')
+  async verifyRegistration(@Body() body: { email: string, otp: string }) {
+    return this.membersService.verifyRegistration(body.email, body.otp);
+  }
+
+  @Post('resend-registration-otp')
+  async resendRegistrationOtp(@Body() body: { email: string }) {
+    return this.membersService.resendRegistrationOtp(body.email);
   }
 
   @UseGuards(FirebaseAuthGuard)

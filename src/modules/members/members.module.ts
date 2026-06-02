@@ -6,11 +6,13 @@ import { MembersController } from './members.controller';
 import { Member, MemberSchema } from './schemas/member.schema';
 
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Member.name, schema: MemberSchema }]),
     CloudinaryModule,
+    MailModule,
   ],
   controllers: [MembersController],
   providers: [MembersService, MembersImportService],
