@@ -80,6 +80,12 @@ export class ConferencesController {
     return this.conferencesService.create(createConferenceDto);
   }
 
+  @Patch('reorder')
+  @UseGuards(FirebaseAuthGuard)
+  reorder(@Body() updates: { id: string; order: number }[]) {
+    return this.conferencesService.reorder(updates);
+  }
+
   @Get()
   findAll() {
     return this.conferencesService.findAll();

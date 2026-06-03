@@ -43,6 +43,9 @@ export class Conference {
 
   @Prop({ default: true })
   isVisible: boolean;
+
+  @Prop({ default: 0 })
+  order: number;
 }
 
 export const ConferenceSchema = SchemaFactory.createForClass(Conference);

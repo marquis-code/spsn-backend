@@ -22,7 +22,7 @@ export class ConferencesService {
     const cachedData = await this.cacheManager.get<ConferenceDocument[]>('all_conferences');
     if (cachedData) return cachedData;
 
-    const conferences = await this.conferenceModel.find().sort({ startDate: 1 }).lean().exec();
+    const conferences = await this.conferenceModel.find().sort({ order: 1, startDate: 1 }).lean().exec();
     await this.cacheManager.set('all_conferences', conferences, 3600);
     return conferences as any;
   }
@@ -63,5 +63,16 @@ export class ConferencesService {
 
   async findAllExport(): Promise<any[]> {
     return this.conferenceModel.find().lean().exec();
+  }
+
+  async reorder(updates: { id: string; order: number }[]): Promise<any> {
+    const ops = updates.map(update => ({
+      updateOne: {
+        filter: { _id: update.id },
+        update: { $set: { order: update.order } },
+      },
+    }));
+    await this.cacheManager.del('all_conferences');
+    return this.conferenceModel.bulkWrite(ops);
   }
 }
