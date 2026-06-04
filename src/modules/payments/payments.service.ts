@@ -9,7 +9,7 @@ export class PaymentsService {
   constructor(
     @InjectModel(Payment.name) private paymentModel: Model<PaymentDocument>,
     private paystackService: PaystackService,
-  ) {}
+  ) { }
 
   async create(createPaymentDto: any): Promise<PaymentDocument> {
     const createdPayment = new this.paymentModel(createPaymentDto);
@@ -25,7 +25,7 @@ export class PaymentsService {
     gateway: 'PAYSTACK' | 'PAYSTACK_VIRTUAL_ACCOUNT';
   }) {
     const tx_ref = `SCPSN-${Date.now()}`;
-    const redirect_url = 'http://localhost:3000/payment-callback';
+    const redirect_url = 'https://spsn-backend.onrender.com/payment-callback';
 
     if (paymentData.gateway === 'PAYSTACK') {
       const payload = {
@@ -62,7 +62,7 @@ export class PaymentsService {
       if (customerRes.status) {
         const dvaRes = await this.paystackService.createDedicatedAccount(customerRes.data.customer_code);
         if (dvaRes.status) {
-           await this.create({
+          await this.create({
             amount: paymentData.amount,
             reference: `DVA-${Date.now()}`,
             status: 'PENDING',
