@@ -30,6 +30,7 @@ import { AdvertsModule } from './modules/adverts/adverts.module';
 import { SponsorsModule } from './modules/sponsors/sponsors.module';
 import { ExcosModule } from './modules/excos/excos.module';
 import { AdminsModule } from './modules/admins/admins.module';
+import { DigestsModule } from './modules/digests/digests.module';
 
 @Module({
   imports: [
@@ -88,6 +89,7 @@ import { AdminsModule } from './modules/admins/admins.module';
     SponsorsModule,
     ExcosModule,
     AdminsModule,
+    DigestsModule,
   ],
   controllers: [AppController],
   providers: [

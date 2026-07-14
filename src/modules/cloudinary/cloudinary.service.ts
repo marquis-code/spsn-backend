@@ -27,6 +27,21 @@ export class CloudinaryService {
     });
   }
 
+  async uploadFileChunked(
+    file: any,
+    folder: string = 'scpsn',
+  ): Promise<UploadApiResponse | UploadApiErrorResponse> {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_chunked_stream(
+        { folder, resource_type: 'raw' },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result as UploadApiResponse);
+        },
+      ).end(file.buffer);
+    });
+  }
+
   async deleteImage(publicId: string): Promise<any> {
     return cloudinary.uploader.destroy(publicId);
   }
